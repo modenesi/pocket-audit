@@ -1,0 +1,36 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the paper below."
+title: "pocket-audit"
+version: 0.1.0
+license: MIT
+repository-code: "https://github.com/modenesi/pocket-audit"
+authors:
+  - family-names: Modenesi
+    given-names: Bernardo
+  - family-names: Chen
+    given-names: Taoyi
+  - family-names: Najafzadehkhoei
+    given-names: Sima
+  - family-names: Wang
+    given-names: Lucia
+  - family-names: Diwan
+    given-names: Ameya
+  - family-names: Knudsen
+    given-names: Beatrice
+preferred-citation:
+  type: article
+  title: "Where Is a Prediction Model Miscalibrated, and for Whom? Local Audits in Outcome-Learned Pockets"
+  year: 2026
+  authors:
+    - family-names: Modenesi
+      given-names: Bernardo
+    - family-names: Chen
+      given-names: Taoyi
+    - family-names: Najafzadehkhoei
+      given-names: Sima
+    - family-names: Wang
+      given-names: Lucia
+    - family-names: Diwan
+      given-names: Ameya
+    - family-names: Knudsen
+      given-names: Beatrice

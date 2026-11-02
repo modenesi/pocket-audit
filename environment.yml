@@ -1,0 +1,20 @@
+name: pocket-audit
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - graph-tool>=2.80        # nested stochastic block model (not on PyPI)
+  - numpy>=1.26
+  - pandas>=2.2
+  - scipy>=1.13
+  - scikit-learn>=1.6
+  - pyyaml>=6
+  - joblib>=1.4
+  - matplotlib>=3.8
+  - python-igraph>=0.11
+  - leidenalg>=0.10
+  - pytest>=8
+  - pip
+  - pip:
+      - lightgbm>=4
+      - -e .

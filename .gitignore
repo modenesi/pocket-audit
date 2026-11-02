@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+
+# Outputs: every run writes here; nothing is committed
+results/
+
+# Data are never committed: each data/<dataset>/ folder keeps only its README.md
+data/**
+!data/README.md
+!data/*/
+!data/*/README.md

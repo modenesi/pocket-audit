@@ -1,0 +1,41 @@
+# Feature allowlist for UCI Diabetes 130-US (discharge-time <30-day readmission), as used in the paper.
+# Every listed variable must be known at discharge. Protected attributes, IDs, and the
+# outcome are never features. Borderline choices are listed under `review`.
+dataset: uci_diabetes
+source: data/uci_diabetes/diabetic_data.csv
+sha256: 0689e7ec031237dc63031b938805c48377748761a3b26acab621567afa24df97
+outcome: {column: readmitted, positive: "<30"}
+unit: patient_nbr          # independent unit for roles and clustered inference
+row_id: encounter_id
+protected:
+  race: {missing: ["?"]}
+  gender: {missing: ["Unknown/Invalid"]}
+contrasts:                 # name: [attribute, focal, reference]
+  black_vs_white: [race, AfricanAmerican, Caucasian]
+  female_vs_male: [gender, Female, Male]
+  hispanic_vs_white: [race, Hispanic, Caucasian]
+primary_contrast: black_vs_white
+exclude_rows:              # deceased or hospice discharges
+  discharge_disposition_id: [11, 13, 14, 19, 20, 21]
+numeric: [time_in_hospital, num_lab_procedures, num_procedures, num_medications,
+          number_outpatient, number_emergency, number_inpatient, number_diagnoses]
+ordinal:
+  age: ["[0-10)", "[10-20)", "[20-30)", "[30-40)", "[40-50)", "[50-60)", "[60-70)", "[70-80)", "[80-90)", "[90-100)"]
+categorical: [admission_type_id, admission_source_id, discharge_disposition_id, medical_specialty,
+              max_glu_serum, A1Cresult, change, diabetesMed,
+              metformin, repaglinide, nateglinide, chlorpropamide, glimepiride, acetohexamide,
+              glipizide, glyburide, tolbutamide, pioglitazone, rosiglitazone, acarbose, miglitol,
+              troglitazone, tolazamide, examide, citoglipton, insulin, glyburide-metformin,
+              glipizide-metformin, glimepiride-pioglitazone, metformin-rosiglitazone,
+              metformin-pioglitazone]
+icd9_grouped: [diag_1, diag_2, diag_3]   # mapped to Strack et al. (2014) diagnosis groups
+review:
+  payer_code: "Excluded: insurance is a socioeconomic proxy; excluded."
+  weight: "Excluded: missing in 96.9% of encounters."
+  medical_specialty: "Included, 49% missing (kept as its own category); confirm."
+support:                   # per protected group (delta) or per pocket (theta)
+  min_n: 100
+  min_units: 100           # distinct patients
+  min_effective_units: 10
+primary_models: [lightgbm]
+pairs: []

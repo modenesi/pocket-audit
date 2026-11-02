@@ -1,0 +1,40 @@
+# Feature allowlist for WiDS 2020 (retrospective first-24-hour in-hospital mortality), as used in the paper.
+# Never features: outcome, IDs, hospital/ICU IDs, gender, ethnicity, APACHE probabilities.
+dataset: wids2020
+source: data/wids2020/training_v2.csv
+sha256: 27861c711f8c196c2a5c858005075fff61df4fb48f6d350c5120cdf45317adeb
+outcome: {column: hospital_death, positive: 1}
+unit: hospital_id          # hospital-disjoint roles (decided 2026-09-28)
+row_id: encounter_id
+protected:
+  ethnicity: {missing: []}
+  gender: {missing: []}
+contrasts:
+  black_vs_white: [ethnicity, African American, Caucasian]
+  female_vs_male: [gender, F, M]
+  hispanic_vs_white: [ethnicity, Hispanic, Caucasian]
+primary_contrast: black_vs_white
+comparators:               # clinical scores audited alongside the new models; invalid values -> excluded
+  apache: apache_4a_hospital_death_prob
+numeric: [age, bmi, height, weight, elective_surgery, apache_post_operative, arf_apache,
+          gcs_eyes_apache, gcs_motor_apache, gcs_verbal_apache, gcs_unable_apache,
+          intubated_apache, ventilated_apache, fio2_apache, paco2_apache, pao2_apache, ph_apache,
+          urineoutput_apache,
+          aids, cirrhosis, diabetes_mellitus, hepatic_failure, immunosuppression, leukemia,
+          lymphoma, solid_tumor_with_metastasis]
+numeric_prefix_expanded:   # expanded to explicit column names at load time and logged
+  - d1_
+categorical: [icu_admit_source, icu_type, apache_3j_bodysystem]
+review:
+  hospital_admit_source: "Excluded: pre-ICU pathway; may act as a site proxy. Confirm."
+  pre_icu_los_days: "Excluded: timing/meaning varies by site. Confirm."
+  apache_3j_diagnosis: "Excluded: high-cardinality code; body system used instead. Confirm."
+  h1_: "First-hour values excluded as redundant with d1_ extremes. Confirm."
+  "*_apache labs": "Worst-first-day APACHE lab inputs excluded as duplicates of d1_ values."
+support:
+  min_n: 100
+  min_units: 15            # distinct hospitals (2026-10-04 validated hospital rule; was 10)
+  min_effective_units: 10
+  max_unit_share: 0.2
+primary_models: [lightgbm, apache]
+pairs: [[lightgbm, apache]]
