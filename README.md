@@ -1,4 +1,9 @@
-<h1 align="center">pocket-audit</h1>
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/logo/pocket-audit-lockup-dark.svg">
+    <img src="assets/logo/pocket-audit-lockup.svg" alt="pocket-audit" width="560">
+  </picture>
+</p>
 
 <p align="center"><b>Where is a prediction model miscalibrated, and for whom?</b><br>
 Local audits in outcome-learned pockets.</p>
@@ -132,6 +137,7 @@ pocket-audit audit    --run-dir results/my_run
 | `simulations/` | Every simulation in the paper, plus the scripts that turn them into its tables and figures |
 | `applications/` | The four real-data applications in the paper |
 | `data/` | Empty. One folder per dataset, each with a README on how to obtain it |
+| `assets/logo/` | Logo, wordmark, icon and social-preview image (SVG and PNG) |
 
 ## Reproducing the paper
 
