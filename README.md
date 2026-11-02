@@ -137,9 +137,13 @@ pocket-audit audit    --run-dir results/my_run
 | `simulations/` | Every simulation in the paper, plus the scripts that turn them into its tables and figures |
 | `applications/` | The four real-data applications in the paper |
 | `data/` | Empty. One folder per dataset, each with a README on how to obtain it |
+| `paper/` | The paper's supplement (PDF) |
 | `assets/logo/` | Logo, wordmark, icon and social-preview image (SVG and PNG) |
 
 ## Reproducing the paper
+
+The paper's supplement is [`paper/supplement.pdf`](paper/supplement.pdf).
+
 
 - **Simulations** need no data except the two semi-synthetic designs: [`simulations/README.md`](simulations/README.md).
 - **Applications**: [`applications/README.md`](applications/README.md). We do not redistribute any dataset. Each
