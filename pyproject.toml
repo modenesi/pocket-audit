@@ -31,6 +31,7 @@ classifiers = [
 [project.optional-dependencies]
 dev = ["pytest>=8"]
 figures = ["matplotlib>=3.8"]
+paper = ["statsmodels>=0.14", "matplotlib>=3.8"]   # the paper's simulation and application scripts
 # graph-tool (nested SBM, the default pocket map) is not on PyPI: conda install -c conda-forge graph-tool
 
 [project.scripts]

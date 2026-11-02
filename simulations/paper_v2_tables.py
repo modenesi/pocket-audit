@@ -413,7 +413,8 @@ def write_error_table(ec, out: Path, mu_ff: pd.DataFrame | None = None):
     L.append(f"Continuous, $n = 10{{,}}000$, 7 specifications & .05 & {reps(cs)} & {cell(cs)} & "
              f"{cell(c[c.design.str.startswith('Continuous, spec')])} \\\\")
     for _, r in e[~e.design.str.startswith("Continuous, spec")].iterrows():
-        L.append(f"{r.design} & {f"{r.alpha:g}".lstrip("0")} & {r.reps} & {cell(e[e.design == r.design])} & "
+        alpha_text = f"{r.alpha:g}".lstrip("0")
+        L.append(f"{r.design} & {alpha_text} & {r.reps} & {cell(e[e.design == r.design])} & "
                  f"{cell(c[c.design == r.design]) if (c.design == r.design).any() else '--'} \\\\")
     if mu_ff is not None:
         m = mu_ff[(mu_ff.family == "mu") & (mu_ff.condition == "exact_null")].rename(columns={"false_flag": "rate"})

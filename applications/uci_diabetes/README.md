@@ -11,10 +11,13 @@ vs. White. Patients are the independent units; the audit uses α = .025.
 
 **Commands.**
 
+Run the WiDS δ audit too (`applications/wids_icu/`): the supplement figure reads both datasets.
+
 ```bash
 python -m pocket_audit discover --config configs/features_uci.yaml --run-dir results/uci_v1 \
   --alpha .025 --n-jobs 8 --inference wild_restricted_mammen --n-boot 4999 --abstain-quantile .01 \
   --project-expected-events --se-floor --restricted-loss --min-graph-profiled-share .8 --sbm-tree-cut
 python -m pocket_audit audit --run-dir results/uci_v1
+mkdir -p results/figures
 python applications/paper_figures.py --out results/figures      # the supplement figure
 ```

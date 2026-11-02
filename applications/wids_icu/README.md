@@ -9,7 +9,8 @@ Black vs. White (primary), female vs. male and Hispanic vs. White. Hospitals are
 hospitals are assigned to development, discovery or audit, and the intervals allow for correlation within a
 hospital. Because there are few hospitals, the audit uses α = .0125.
 
-**Data.** Restricted access: you need a credentialed PhysioNet account and must sign its data-use agreement. See
+**Data.** Restricted access through PhysioNet: register for an account, sign this dataset's data-use agreement and
+meet any other requirement shown on its access page. See
 [`data/wids2020/README.md`](../../data/wids2020/README.md).
 
 **Commands.** The first audit (δ, κ) runs from the command line with the feature list in `configs/`:

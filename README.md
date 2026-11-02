@@ -18,10 +18,12 @@ under-predicts. Concentrated errors barely move an average, and opposite errors 
 
 A *pocket* is a set of observations that are similar in how the outcome is predicted from their features. The
 pockets are learned from the data, not chosen by hand. The audit needs only features, outcomes and fixed
-predictions; it never looks inside the model, so it also works for proprietary scores.
+predictions, not access to the assessed model's internals (similarity comes from a separate auxiliary forest), so it
+also works for proprietary scores.
 
-Because the pockets are learned from the outcome, not from any model's errors, one frozen map can audit many models,
-and a gap within a pocket compares people who are alike in what predicts the outcome.
+Because the pockets are learned from the outcome, not from any model's errors, one frozen map can audit several
+assessed models and compare groups within shared pockets. The forest emphasizes predictive features and needs no
+rescaling of numeric features or imputation of their missing values.
 
 ## How it works
 
@@ -39,8 +41,13 @@ and a gap within a pocket compares people who are alike in what predicts the out
    audit* runs the forest and ridge maps at α/2 each. Pockets with too little data are reported as untested, not
    as clean.
 
-The audit also reports which error sizes each pocket rules out, so a clean result is a bounded result, not just
-"no flag".
+For tested pockets, the intervals also say which pocket-average error sizes are excluded at the stated confidence
+level. No flag alone does not establish a small error, and opposite errors can still cancel within a pocket.
+
+**Limits of the error control.** The intervals target simultaneous coverage conditional on the frozen maps. Error
+control was evaluated in the paper's simulation designs, not guaranteed for arbitrary data. With few, unequal
+dependent units (for example, a few dozen hospitals), the μ audit showed inflated false flags and needs a stricter
+level, calibrated separately.
 
 ## Install
 
@@ -56,6 +63,11 @@ pytest                                   # about 10 seconds
 ```
 
 Without graph-tool, `pip install -e .` still works; use the Leiden pockets (`run_sbm=False, run_leiden=True`).
+To rerun the paper's scripts, also install `pip install -e ".[paper]"` (statsmodels and matplotlib).
+
+**Versions used in the paper.** Python 3.13.1, graph-tool 2.88, NumPy 2.2.2, pandas 2.2.3, SciPy 1.15.1,
+scikit-learn 1.9.0, LightGBM 4.7.0, python-igraph 1.0.0, leidenalg 0.12.0. `environment.yml` installs compatible
+recent versions; stochastic partitions and the last digits of results can differ across versions.
 
 ## Quickstart
 
@@ -90,14 +102,19 @@ data = AuditData(
     contrasts=[Contrast("black_vs_white", "race", focal="Black", reference="White")],
     primary_contrast="black_vs_white",
 )
-cfg = PipelineConfig(include_mu=True, n_jobs=8, support=SupportRule(min_n=100, min_units=15))
+cfg = PipelineConfig(include_mu=True, alpha=0.025, n_jobs=8,                # combined audit: .025 per map
+                     support=SupportRule(min_n=100, min_units=15))
 frozen = discover(data, cfg, preds={"my_model": predictions})   # stage 1: pockets, from non-audit rows only
 res = audit(data, frozen)                                        # stage 2: run once
 res["results"]                                                   # one row per pocket x estimand
 ```
 
-The command line does the same from a YAML feature list (see `configs/`), writing every run to a new directory
-with a manifest:
+For the combined audit at .05, combine the flags of the forest map (`partition == "sbm"`) and the ridge map
+(`partition == "ridge_kmeans"`), each audited at .025. The other partitions in `res["results"]` are comparison
+groupings, not part of the combined audit.
+
+The command line runs the δ (and κ) audit from a YAML feature list (see `configs/`), writing every run to a new
+directory with a manifest. To include μ, use the Python API with `include_mu=True`.
 
 ```bash
 pocket-audit discover --config configs/features_uci.yaml --run-dir results/my_run
@@ -124,8 +141,8 @@ pocket-audit audit    --run-dir results/my_run
 
 Each application's settings were frozen in a written protocol before its audit was run, and each audit was run
 once. The ICU analysis of μ is labeled exploratory because those audit outcomes had already been read for an earlier
-audit of δ. The scripts enforce the order: the `discover`, `describe` and `validate` stages never read an audit
-outcome.
+audit of δ. The scripts enforce the order: the `discover`, `describe` and `validate` stages do not use audit outcomes
+to fit models, construct pockets or select analysis settings.
 
 ## Citation
 

@@ -6,8 +6,8 @@ and the APACHE IVa predicted probability of death.
 
 **Access.** Restricted. The data are on PhysioNet: https://physionet.org/content/widsdatathon2020/1.0.0/
 
-1. Create a PhysioNet account and complete its credentialing (this includes human-subjects research training).
-2. Sign the data-use agreement on the dataset's page.
+1. Register for a PhysioNet account.
+2. Sign this dataset's data-use agreement, and meet any other requirement shown on its access page.
 3. Download the files. Do not share them or commit them anywhere; the agreement forbids redistribution.
 
 **Put here.**

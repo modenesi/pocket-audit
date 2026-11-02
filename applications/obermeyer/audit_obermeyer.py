@@ -31,7 +31,6 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
-sys.path.insert(0, str(ROOT / "code"))
 
 from pocket_audit.assignment import ABSTAIN  # noqa: E402
 from pocket_audit.audit import AuditConfig, SupportRule, run_audit  # noqa: E402
@@ -49,7 +48,7 @@ TOLERANCES = (0.25, 0.5)              # active chronic conditions
 
 
 def load() -> tuple[AuditData, pd.DataFrame]:
-    from download_obermeyer2019 import SHA256, sha256
+    from download_data import SHA256, sha256         # same folder as this script
     if sha256(SOURCE) != SHA256:
         raise RuntimeError("source checksum differs from the pinned download")
     df = pd.read_csv(SOURCE)

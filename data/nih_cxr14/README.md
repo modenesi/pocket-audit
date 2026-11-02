@@ -13,6 +13,11 @@ https://nihcc.app.box.com/v/ChestXray-NIHCC
 bash applications/chest_xray/download_data.sh    # into data/nih_cxr14/raw/
 ```
 
+The script checks every file against the SHA-256 of the version used in the paper
+(`applications/chest_xray/expected_sha256.txt`). If a check fails, the mirror has changed: download the same files
+from the NIH original and rerun the check (`sha256sum -c applications/chest_xray/expected_sha256.txt` from inside
+`raw/`).
+
 To keep the images elsewhere (an external disk, say), set `NIH_CXR_DIR` for the download and `NIH_CXR14_DIR` (the
 folder holding `raw/` and `derived/`) for the audit.
 

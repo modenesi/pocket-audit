@@ -16,6 +16,7 @@ quick check at the end of this page.
 | `continuous_ladder.py` | Continuous outcomes, independent observations (specs 1–5, masking specs 1m and 4zm) |
 | `smoke_ladder.py` | Binary outcomes, n = 50,000, independent observations or 150 dependent units (cells D0–DX1) |
 | `semisynthetic_app.py` | Real WiDS or UCI features with simulated outcomes and a planted error |
+| `semisynthetic_family_summary.py` | Coverage summary of the dependence stress check |
 | `mu_localization_sims.py` | "Where" simulations: a local miscalibration μ planted on saved frozen maps |
 | `union_audit.py`, `union_audit_binary.py`, `union_audit_semi.py` | The combined forest + ridge audit, re-audited from saved replicates |
 | `paper_v2_tables.py` | Table 1 (false flags) and Figure 2 (localization scoreboard) |
@@ -70,7 +71,7 @@ These need the WiDS and UCI data in `data/` (see `data/wids2020/README.md` and `
 
 ```bash
 python simulations/semisynthetic_app.py --dataset wids --out-dir results/app_20261005/semi_wids \
-  --cells null vent05 vent10 sepsis10 --reps 0 30 --workers 10
+  --cells null vent05 vent10 sepsis10 --reps 0 20 --workers 10
 python simulations/semisynthetic_app.py --dataset wids --out-dir results/app_20261005/semi_wids_enc \
   --cells null vent10 vent05 --reps 0 50 --role-unit row --workers 10
 python simulations/semisynthetic_app.py --dataset wids --out-dir results/app_20261005/semi_wids_enc \
@@ -108,6 +109,21 @@ These reuse the frozen maps saved by steps 1 and 2; nothing is rediscovered.
 ```bash
 python simulations/mu_localization_sims.py run --out results/mu_sims_20261101 --workers 16
 python simulations/mu_localization_sims.py summarize --out results/mu_sims_20261101
+# retrospective: the single-map level that would hold the false-flag rate at 5% in each design (reported in the text)
+python simulations/mu_localization_sims.py calibrate --out results/mu_sims_20261101 --workers 16
+```
+
+### 5b. Dependence stress check (supplement)
+
+Outcomes share a hospital-level shock; the WiDS features are real (needs the WiDS data).
+
+```bash
+python simulations/semisynthetic_app.py --dataset wids --out-dir results/app_20261005/dep_wids_enc_rho20 \
+  --cells null --reps 0 100 --n-boot 1999 --role-unit row --hosp-rho .2 --family --workers 6
+python simulations/semisynthetic_app.py --dataset wids --out-dir results/app_20261005/dep_wids_hosp_rho20 \
+  --cells null --reps 0 100 --n-boot 1999 --hosp-rho .2 --family --workers 12
+python simulations/semisynthetic_family_summary.py --runs results/app_20261005/dep_wids_enc_rho20 \
+  results/app_20261005/dep_wids_hosp_rho20 --out results/tables
 ```
 
 ### 6. Combined audit, tables and figures
@@ -115,14 +131,20 @@ python simulations/mu_localization_sims.py summarize --out results/mu_sims_20261
 `union_audit_semi.py` reloads the WiDS and UCI data, like step 3.
 
 ```bash
+mkdir -p results/tables results/figures
+```
+
+```bash
 python simulations/union_audit.py --set design --out results/tables
 python simulations/union_audit.py --set fresh --out results/tables
 python simulations/union_audit.py --set null20k --out results/tables
-python simulations/union_audit_binary.py --out results/tables
+python simulations/union_audit_binary.py --out results/tables --max-reps 150
+python simulations/union_audit_binary.py --out results/tables --cells D0 DH0 --tag _nulls450
 python simulations/union_audit_semi.py --out results/tables
 python simulations/union_table.py
-python simulations/paper_v2_tables.py --out results/tables --fig-dir results/figures \
-  --mu-flags results/mu_sims_20261101/false_flags.csv
+python simulations/paper_v2_tables.py --out results/tables --fig-dir results/figures
+python simulations/paper_v2_tables.py --table-from results/tables --out results/tables \
+  --mu-flags results/mu_sims_20261101/false_flags.csv     # adds the mu block to Table 1
 python simulations/mu_sims_tables.py --run results/mu_sims_20261101 --out results/tables/s8_mu_sims_tables.tex
 python simulations/mf_sweep_summary.py --out results/tables
 python simulations/utail_mixing.py --out results/tables --fig-dir results/figures

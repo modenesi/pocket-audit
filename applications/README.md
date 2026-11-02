@@ -27,6 +27,7 @@ The application scripts run in stages, and only the last one reads the audit obs
 After the applications have run:
 
 ```bash
+mkdir -p results/tables results/figures
 python applications/figure_applications.py      # Figure 3: care-management and ICU audits
 python applications/tables_main.py              # Supplement: validation of the mu audits
 python applications/paper_figures.py --out results/figures   # Supplement: UCI audit; the masking schematic
